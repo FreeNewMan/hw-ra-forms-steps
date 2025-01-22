@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+}
+
+input, label {
+  display: block;
+  text-align: center;
+}
+
+input {
+  border-radius: 5px;
+  height: 20px; 
+  border: 1px solid black;
+}
+
+
+ul {
+  list-style-type: none;
+} 
+
+ul li {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.steps {
+ display: block;
+ border: 1px solid black;
+ border-radius: 10px;
+ width: 430px;
+ padding: 0;
+ margin-left: 60px;
+}
+
+.stepitem {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.fielditem {
+  width: 140px;
+  text-align: center;
+  padding: 2px;
+}
+
+.fieldaction {
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
