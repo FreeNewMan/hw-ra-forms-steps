@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from "uuid";
+import moment from 'moment';
 
 
 interface IStep {
@@ -24,20 +25,25 @@ export function Trainings() {
     e.preventDefault();
     const { dateinput, distanceinput } = e.target;
 
-    let chobj = steps.filter((item) => item.stDate === dateinput.value);
-    if (chobj.length !== 0) {
-      if (form.stateForm === "add") {
-        chobj[0].distance += parseFloat(distanceinput.value);
+    if (isDate(dateinput.value) && isNumber(distanceinput.value)) {
+      let chobj = steps.filter((item) => item.stDate === dateinput.value);
+
+      if (chobj.length !== 0) {
+        if (form.stateForm === "add") {
+          chobj[0].distance += parseFloat(distanceinput.value);
+        }
+        else {
+          chobj[0].stDate = dateinput.value;
+          chobj[0].distance = parseFloat(distanceinput.value);
+        }
       }
       else {
-        chobj[0].distance = parseFloat(distanceinput.value);
+        setStep((p) => [...p, { id: uuidv4(), stDate: dateinput.value, distance: parseFloat(distanceinput.value) }]);
       }
-    }
-    else {
-      setStep((p) => [...p, { id: uuidv4(), stDate: dateinput.value, distance: parseFloat(distanceinput.value) }]);
+
+      setForm({ dateinput: "", distanceinput: "", stateForm: "add" });
     }
 
-    setForm({ dateinput: "", distanceinput: "", stateForm: "add" });
   };
 
   const handleStep = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +62,19 @@ export function Trainings() {
     }
   };
 
+  const isDate = (sdate) => { return moment(sdate, 'DD.MM.YYYY', true).isValid() }
+  const isNumber = (snum) => { return !isNaN(snum) }
+
+
+  const compareDatesCriteria = (a, b) => {
+    let ardate1 = a.split('.');
+    let ardate2 = b.split('.');
+    let date1 = new Date(ardate1[2], ardate1[1], ardate1[0]);
+    let date2 = new Date(ardate2[2], ardate2[1], ardate2[0]);
+    if (date1 > date2) return -1;
+    if (date1 < date2) return 1;
+    return 0;
+  }
 
   return (
     <>
@@ -76,7 +95,7 @@ export function Trainings() {
       </form>
       <ul className="steps">
         {steps
-          .sort((a, b) => b.stDate.localeCompare(a.stDate))
+          .sort((a, b) => compareDatesCriteria(a.stDate, b.stDate))
           .map((b) => (
             <div className="stepitem" key={b.id}>
               <div className="fielditem">
@@ -85,10 +104,10 @@ export function Trainings() {
               <div className="fielditem">
                 {b.distance}
               </div>
-              <div className="fieldaction" key={b.id} onClick={() => editItem(b.id)}>
+              <div className="fieldaction" onClick={() => editItem(b.id)}>
                 ✎
               </div>
-              <div className="fieldaction" key={b.id} onClick={() => removeItem(b.id)}>
+              <div className="fieldaction" onClick={() => removeItem(b.id)}>
                 ✘
               </div>
             </div>
